@@ -105,8 +105,8 @@ def process_request(request, request_status_dict):
         request_status_dict[request['id']]['status'] = 'error'
         request_status_dict[request['id']]['message'] = str(e)
 
-    finally:
-        clean_workdir(workdir)
+    #finally:
+        #clean_workdir(workdir)
 
 
 # todo: implement this
