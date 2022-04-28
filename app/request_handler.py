@@ -19,6 +19,7 @@ import time
 import json
 import shutil
 import subprocess
+import traceback
 from . import __request_check_delay__, __workdir_env_key__, __blib_dir_env_key__, __spectr_batch_size_env_key__, \
     __blib_executable_path_env_key__, ssl_lib, ms2_lib, general_utils, spectr_utils
 
@@ -105,6 +106,9 @@ def process_request(request, request_status_dict):
     except Exception as e:
         request_status_dict[request['id']]['status'] = 'error'
         request_status_dict[request['id']]['message'] = str(e)
+
+        # print stack trace
+        traceback.print_exc()
 
     # finally:
         # clean_workdir(workdir)
