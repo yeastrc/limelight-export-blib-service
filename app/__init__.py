@@ -14,7 +14,7 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from . import general_utils
+from . import general_utils, request_handler
 
 __version__ = '1.0.0'
 __proton_mass__ = 1.007276466621
@@ -59,3 +59,6 @@ general_utils.check_for_missing_env_vars([
     __blib_dir_env_key__,
     __blib_executable_path_env_key__
 ])
+
+# start up the request handler
+request_handler.process_request_queue(request_queue, request_status_dict)
