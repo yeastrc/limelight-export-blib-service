@@ -15,16 +15,25 @@
 #   limitations under the License.
 
 __version__ = '1.0.0'
-__spectr_get_scan_data_env_key__ = 'SPECTR_GET_SCAN_DATA_URL'
-__webapp_port_env_key__ = 'WEBAPP_PORT'
-__spectr_number_of_scans_to_request__ = 20
 __proton_mass__ = 1.007276466621
+
+# environmental variable for the number of scans to process at a time from spectr
+__spectr_batch_size_env_key__ = 'SPECTR_BATCH_SIZE'
+
+# environmental variable name for the port to use for this web service
+__webapp_port_env_key__ = 'WEBAPP_PORT'
+
+# environmental variable name for URL to the spectr web service for retrieving scan data
+__spectr_get_scan_data_env_key__ = 'SPECTR_GET_SCAN_DATA_URL'
 
 # environmental variable name for the full path to the work dir
 __workdir_env_key__ = 'APP_WORKDIR'
 
 # environmental variable name for the full path to the final dir to place the blib file
 __blib_dir_env_key__ = 'BLIB_DIR'
+
+# environmental variable name for full path to BlibBuild executable
+__blib_executable_path_env_key__ = 'BLIB_EXEC_PATH'
 
 # how long (in seconds) to sleep between checking for new requests to process
 __request_check_delay__ = 10

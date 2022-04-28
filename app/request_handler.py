@@ -18,7 +18,7 @@ import os
 import time
 import json
 import shutil
-from . import __request_check_delay__, __workdir_env_key__, __blib_dir_env_key__, __spectr_number_of_scans_to_request__, \
+from . import __request_check_delay__, __workdir_env_key__, __blib_dir_env_key__, __spectr_batch_size_env_key__, \
     ssl_lib, ms2_lib, general_utils, spectr_utils
 
 
@@ -147,7 +147,12 @@ def create_ms2_file(spectr_file_id, ms2_file_name, workdir, scans_to_add):
     Returns:
         None
     """
-    scan_count_per_call = __spectr_number_of_scans_to_request__
+    scan_count_per_call = os.getenv(__spectr_batch_size_env_key__)
+    if scan_count_per_call is None:
+        raise ValueError('Missing environmental variable:', __spectr_batch_size_env_key__)
+
+    scan_count_per_call = int(scan_count_per_call)
+
     scans_to_add.sort()  # maybe not necessary, but put lower scan numbers first
 
     scan_sets = [scans_to_add[i:i + scan_count_per_call] for i in range(0, len(scans_to_add), scan_count_per_call)]
