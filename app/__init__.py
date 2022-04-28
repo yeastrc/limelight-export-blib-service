@@ -45,7 +45,7 @@ request_queue = []
 
 # dict of:
 #   request id : {
-#       status: one of 'queued', 'error', or 'success',
+#       status: one of 'queued', 'processing', 'not found', 'success', 'error'
 #       message: file path if successful, error message otherwise
 #   }
 request_status_dict = {}
