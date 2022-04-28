@@ -33,4 +33,4 @@ url = 'http://' + service_host + ':' + service_port + '/requestNewBlibConversion
 print('Sending request to:', url)
 response = requests.post(url, json=test_json_parsed)
 print('Got response:', response)
-
+print(response.text)
