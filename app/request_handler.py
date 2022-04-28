@@ -18,8 +18,9 @@ import os
 import time
 import json
 import shutil
+import subprocess
 from . import __request_check_delay__, __workdir_env_key__, __blib_dir_env_key__, __spectr_batch_size_env_key__, \
-    ssl_lib, ms2_lib, general_utils, spectr_utils
+    __blib_executable_path_env_key__, ssl_lib, ms2_lib, general_utils, spectr_utils
 
 
 def process_request_queue(request_queue, request_status_dict):
@@ -95,7 +96,7 @@ def process_request(request, request_status_dict):
 
         # execute proteowizard blib converter using ssl file and ms2 files
         blib_destination_path = os.path.join(os.getenv(__blib_dir_env_key__))
-        execute_proteowizard_conversion(blib_destination_path, ssl_file_name, workdir)
+        execute_bibliospec_conversion(blib_destination_path, request['id'], ssl_file_name, workdir)
         verify_blib_exists(blib_destination_path)
 
         request_status_dict[request['id']]['status'] = 'success'
@@ -105,20 +106,54 @@ def process_request(request, request_status_dict):
         request_status_dict[request['id']]['status'] = 'error'
         request_status_dict[request['id']]['message'] = str(e)
 
-    #finally:
-        #clean_workdir(workdir)
+    # finally:
+        # clean_workdir(workdir)
 
 
-# todo: implement this
-def execute_proteowizard_conversion(blib_filename, ssl_file_name, workdir):
-    """Verify the file at the given path exists, raise exception if not
+def execute_bibliospec_conversion(blib_destination_path, library_name, ssl_file_name, workdir):
+    """Convert the given ssl file to a .blib spectral library
 
     Parameters:
-        blib_destination_path (string): Full path to blib file
+        blib_destination_path (string): Full path to the final location to place the .blib file
+        library_name (string): The base file name of the .blib file (do not include .blib)
+        ssl_file_name (string): The filename of the .ssl file we are processing
+        workdir (string): Full path to where the .ssl and .ms2 files are located
 
     Returns:
         None
     """
+
+    blib_executable = os.getenv(__blib_executable_path_env_key__)
+    if not os.path.exists(blib_executable):
+        raise ValueError('Could not find BlibOut executable:', blib_executable)
+
+    if not blib_executable.endswith('BlibBuild'):
+        raise ValueError('Blib executable must have the name BlibBuild.')
+
+    if os.getenv(__blib_dir_env_key__) is None:
+        raise ValueError('Blib destination dir env var not defined:', __blib_dir_env_key__)
+
+    blib_destination_dir = os.getenv(__blib_dir_env_key__)
+    if not os.path.exists(blib_destination_dir) or not os.path.isdir(blib_destination_dir):
+        raise ValueError('Blib destination dir does not exist:', blib_destination_dir)
+
+    result = subprocess.run(
+        [blib_executable, '-H', '-K', ssl_file_name, library_name],
+        cwd=workdir,
+        capture_output=True,
+        text=True
+    )
+    print(result.stdout)
+    print(result.stderr)
+
+    if result.returncode != 0:
+        raise ValueError("Non-zero return code from BlibBuild. Error message:", result.stderr)
+
+    # move the resulting .blib to the final location
+    shutil.move(
+        os.path.join(workdir, library_name + '.blib'),
+        os.path.join(blib_destination_dir, library_name + '.blib')
+    )
 
 
 def verify_blib_exists(blib_destination_path):
