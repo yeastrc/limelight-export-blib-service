@@ -29,7 +29,7 @@ service_port = os.getenv('WEBAPP_PORT')
 test_json_str = os.getenv('CONVERSION_TEST_JSON')
 test_json_parsed = json.loads(test_json_str)
 
-test_project_id = os.getenv('TEST_PROJECT_ID')
+test_project_id = int(os.getenv('TEST_PROJECT_ID'))
 
 
 # create request
