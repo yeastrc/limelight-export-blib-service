@@ -14,7 +14,7 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from . import __proton_mass__
+proton_mass = 1.007276466621
 
 
 def get_neutral_mass_from_mz_and_charge(mz, charge):
@@ -28,6 +28,6 @@ def get_neutral_mass_from_mz_and_charge(mz, charge):
         The neutral mass
     """
     mass = mz * charge
-    mass -= charge * __proton_mass__
+    mass -= charge * proton_mass
 
     return mass

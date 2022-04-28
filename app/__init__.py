@@ -17,7 +17,6 @@
 from . import general_utils, request_handler
 
 __version__ = '1.0.0'
-__proton_mass__ = 1.007276466621
 
 # environmental variable for the number of scans to process at a time from spectr
 __spectr_batch_size_env_key__ = 'SPECTR_BATCH_SIZE'
