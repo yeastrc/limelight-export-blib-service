@@ -100,7 +100,7 @@ def process_request(request, request_status_dict):
         verify_blib_exists(blib_destination_path)
 
         request_status_dict[request['id']]['status'] = 'success'
-        request_status_dict[request['id']]['message'] = os.path.join(os.getenv(__blib_dir_env_key__), blib_filename)
+        request_status_dict[request['id']]['message'] = request['id'] + '.blib'
 
     except Exception as e:
         request_status_dict[request['id']]['status'] = 'error'
