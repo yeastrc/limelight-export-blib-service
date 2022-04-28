@@ -14,7 +14,7 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from . import general_utils, request_handler
+import os
 
 __version__ = '1.0.0'
 
@@ -53,11 +53,15 @@ request_status_dict = {}
 request_queue_status = {'started': False}
 
 # ensure all environmental variables are present
-general_utils.check_for_missing_env_vars([
+env_var_names = [
     __spectr_batch_size_env_key__,
     __webapp_port_env_key__,
     __spectr_get_scan_data_env_key__,
     __workdir_env_key__,
     __blib_dir_env_key__,
     __blib_executable_path_env_key__
-])
+]
+
+for env_var_name in env_var_names:
+    if os.getenv(env_var_name) is None:
+        raise ValueError('Missing environmental variable:', env_var_name)

@@ -1,19 +1,4 @@
 import uuid
-import os
-
-
-def check_for_missing_env_vars(env_var_names):
-    """Check the provided list of environmental variable names. Raise exception if any are missing.
-
-    Parameters:
-        env_var_names (Array): The environmental variables
-
-    Returns:
-        None
-    """
-    for env_var_name in env_var_names:
-        if os.getenv(env_var_name) is None:
-            raise ValueError('Missing environmental variable:', env_var_name)
 
 
 def generate_request_id():
