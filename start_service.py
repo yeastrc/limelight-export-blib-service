@@ -18,7 +18,7 @@ import os
 from flask import Flask, request
 from flask_restful import Resource, Api
 from app import general_utils, web_service_utils, request_handler, request_status_dict, request_queue, \
-    __webapp_port_env_key__
+    request_queue_status, __webapp_port_env_key__
 
 app = Flask(__name__)
 api = Api(app)
@@ -58,6 +58,10 @@ class RequestBlibConversion(Resource):
             'message': None
         }
 
+        if not request_queue_status['started']:
+            request_queue_status['started'] = True
+            request_handler.process_request_queue(request_queue, request_status_dict)
+
         return request_id, 200
 
 
@@ -65,9 +69,6 @@ api.add_resource(RequestBlibConversion, '/requestNewBlibConversion')
 api.add_resource(RequestConversionStatus, '/requestConversionStatus')
 
 if __name__ == '__main__':
-
-    # start up the request handler
-    request_handler.process_request_queue(request_queue, request_status_dict)
 
     port = os.getenv(__webapp_port_env_key__)
     if port is None:

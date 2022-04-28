@@ -50,6 +50,9 @@ request_queue = []
 #   }
 request_status_dict = {}
 
+# whether or not the request queue processing has been started up
+request_queue_status = {'started': False}
+
 # ensure all environmental variables are present
 general_utils.check_for_missing_env_vars([
     __spectr_batch_size_env_key__,
