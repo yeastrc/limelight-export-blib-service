@@ -48,6 +48,8 @@ class RequestBlibConversion(Resource):
         project_id = json_data['project_id']
         spectral_data = json_data['spectral_data']
 
+        print('Conversion request for project', project_id)
+
         request_queue.append({'id': request_id, 'data': spectral_data})
         request_status_dict[request_id] = {
             'project_id': project_id,
