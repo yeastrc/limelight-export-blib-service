@@ -68,7 +68,8 @@ def process_request(request, request_status_dict):
         ssl_file_name = 'export.ssl'
         ssl_file = ssl_lib.initialize_ssl_file(workdir, ssl_file_name)
 
-        request_data = json.load(request['data'])
+        request_data = request['data']
+
         spectr_file_count = 0
         for spectr_dict in request_data:
             spectr_file_count = spectr_file_count + 1
