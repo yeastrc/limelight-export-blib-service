@@ -59,6 +59,3 @@ general_utils.check_for_missing_env_vars([
     __blib_dir_env_key__,
     __blib_executable_path_env_key__
 ])
-
-# start up the request handler
-request_handler.process_request_queue(request_queue, request_status_dict)
