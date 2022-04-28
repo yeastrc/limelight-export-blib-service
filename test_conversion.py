@@ -32,5 +32,7 @@ test_json_parsed = json.loads(test_json_str)
 url = 'http://' + service_host + ':' + service_port + '/requestNewBlibConversion'
 print('Sending request to:', url)
 response = requests.post(url, json=test_json_parsed)
-print('Got response:', response)
-print(response.text)
+print('Got response:', json.loads(response.text))
+
+
+
