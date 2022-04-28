@@ -14,6 +14,8 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
+from . import general_utils
+
 __version__ = '1.0.0'
 __proton_mass__ = 1.007276466621
 
@@ -47,3 +49,13 @@ request_queue = []
 #       message: file path if successful, error message otherwise
 #   }
 request_status_dict = {}
+
+# ensure all environmental variables are present
+general_utils.check_for_missing_env_vars([
+    __spectr_batch_size_env_key__,
+    __webapp_port_env_key__,
+    __spectr_get_scan_data_env_key__,
+    __workdir_env_key__,
+    __blib_dir_env_key__,
+    __blib_executable_path_env_key__
+])
