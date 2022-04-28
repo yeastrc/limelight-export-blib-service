@@ -40,6 +40,7 @@ def process_request_queue(request_queue, request_status_dict):
         process_request(request, request_status_dict)
 
     time.sleep(__request_check_delay__)
+    process_request_queue(request_queue, request_status_dict)
 
 
 def process_request(request, request_status_dict):
