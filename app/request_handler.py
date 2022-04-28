@@ -16,7 +16,6 @@
 
 import os
 import time
-import json
 import shutil
 import subprocess
 import traceback
@@ -82,6 +81,10 @@ def process_request(request, request_status_dict):
             for psm in spectr_dict['psms']:
                 scan_number = psm['scan_number']
                 charge = psm['charge']
+
+                if 'modifications' not in psm:
+                    psm['modifications'] = {}
+
                 peptide_sequence = general_utils.build_peptide_string_with_mods(
                     psm['peptide_sequence'],
                     psm['modifications']
@@ -98,7 +101,7 @@ def process_request(request, request_status_dict):
 
         # execute proteowizard blib converter using ssl file and ms2 files
         blib_destination_path = os.getenv(__blib_dir_env_key__)
-        execute_bibliospec_conversion(blib_destination_path, request['id'], ssl_file_name, workdir)
+        execute_bibliospec_conversion(request['project_id'], request['id'], ssl_file_name, workdir)
         verify_blib_exists(blib_destination_path)
 
         request_status_dict[request['id']]['status'] = 'success'
