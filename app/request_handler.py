@@ -95,7 +95,7 @@ def process_request(request, request_status_dict):
         ssl_lib.close_ssl_file(ssl_file)
 
         # execute proteowizard blib converter using ssl file and ms2 files
-        blib_destination_path = os.path.join(os.getenv(__blib_dir_env_key__))
+        blib_destination_path = os.getenv(__blib_dir_env_key__)
         execute_bibliospec_conversion(blib_destination_path, request['id'], ssl_file_name, workdir)
         verify_blib_exists(blib_destination_path)
 
@@ -110,11 +110,11 @@ def process_request(request, request_status_dict):
         # clean_workdir(workdir)
 
 
-def execute_bibliospec_conversion(blib_destination_path, library_name, ssl_file_name, workdir):
+def execute_bibliospec_conversion(project_id, library_name, ssl_file_name, workdir):
     """Convert the given ssl file to a .blib spectral library
 
     Parameters:
-        blib_destination_path (string): Full path to the final location to place the .blib file
+        project_id (int): Project id, blibs are written to blib_destination_path/project_id/
         library_name (string): The base file name of the .blib file (do not include .blib)
         ssl_file_name (string): The filename of the .ssl file we are processing
         workdir (string): Full path to where the .ssl and .ms2 files are located
@@ -148,6 +148,11 @@ def execute_bibliospec_conversion(blib_destination_path, library_name, ssl_file_
 
     if result.returncode != 0:
         raise ValueError("Non-zero return code from BlibBuild. Error message:", result.stderr)
+
+    # place the resulting blib in the blib_destination_dir/project_id/
+    blib_destination_dir = os.path.join(blib_destination_dir, str(project_id))
+    if not os.path.exists(blib_destination_dir):
+        os.mkdir(blib_destination_dir)
 
     # move the resulting .blib to the final location
     shutil.move(
