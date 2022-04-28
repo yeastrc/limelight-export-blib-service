@@ -14,7 +14,6 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-from . import __version__
 from . import mass_utils
 from datetime import datetime
 import os
@@ -73,7 +72,6 @@ def initialize_ms2_file(path_to_directory, filename):
 
     write_header_to_ms2_file(ms2_file, 'CreationDate', datetime.now().strftime("%Y%m%d"))
     write_header_to_ms2_file(ms2_file, 'Extractor', 'Limelight blib exporter, Spectr to MS2')
-    write_header_to_ms2_file(ms2_file, 'ExtractorVersion', __version__)
     write_header_to_ms2_file(ms2_file, 'Comments', 'See: https://github.com/yeastrc/limelight-export-blib-service')
 
     return ms2_file
