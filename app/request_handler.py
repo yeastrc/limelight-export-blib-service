@@ -103,7 +103,7 @@ def process_request(request, request_status_dict):
         blib_destination_path = os.getenv(__blib_dir_env_key__)
         execute_bibliospec_conversion(
             request_status_dict[request['id']]['project_id'],
-            request['id'],
+            blib_filename,
             ssl_file_name,
             workdir
         )
@@ -169,8 +169,8 @@ def execute_bibliospec_conversion(project_id, library_name, ssl_file_name, workd
 
     # move the resulting .blib to the final location
     shutil.move(
-        os.path.join(workdir, library_name + '.blib'),
-        os.path.join(blib_destination_dir, library_name + '.blib')
+        os.path.join(workdir, library_name),
+        os.path.join(blib_destination_dir, library_name)
     )
 
 
