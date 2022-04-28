@@ -55,7 +55,7 @@ def build_peptide_string_with_mods(peptide_sequence, mods):
         output_string += peptide_sequence[element]
 
         if str(element + 1) in mods:
-            mass = mods[element + 1]
+            mass = mods[str(element + 1)]
             mass_str = str(mass)
             if mass > 0:
                 mass_str = '+' + mass_str
