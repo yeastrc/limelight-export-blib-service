@@ -71,3 +71,44 @@ def get_json_for_status_request(status_request_data, request_status_dict):
         request_status_dict[request_id]['status'],
         request_status_dict[request_id]['message']
     )
+
+
+def cancel_conversion_request(cancel_request_data, request_queue, request_status_dict):
+    """Remove the supplied request_id from the request_queue and request_status_dict
+
+    Parameters:
+        cancel_request_data (dict): The cancel request: {'request_id': request_id, 'project_id': project_id}
+        request_queue (Array): The request queue, an array of dicts: {'id': request_id, 'data': xml_request}
+        request_status_dict (dict): The dict that stores the status of requests
+
+    Returns:
+        dict: A simple dict in the form of {'cancel_message': <cancel message>}
+    """
+
+    request_id = cancel_request_data['request_id']
+    project_id = cancel_request_data['project_id']
+
+    if request_id not in request_status_dict:
+        return {'cancel_message': 'Request id not found.'}
+
+    if project_id != request_status_dict[request_id]['project_id']:
+        return {'cancel_message': 'Project id does not match.'}
+
+    # get index of request to remove
+    idx = 0
+    found = False
+    for request in request_queue:
+        if request['request_id'] == request_id:
+            found = True
+            break
+
+        idx += 1
+
+    if not found:
+        return {'cancel_message': 'Request id not found.'}
+    else:
+        request_queue.pop(idx)
+
+    del request_status_dict[request_id]
+
+    return {'cancel_message': 'Removed.'}

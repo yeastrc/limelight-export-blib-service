@@ -26,6 +26,18 @@ app = Flask(__name__)
 api = Api(app)
 
 
+class CancelConversionRequest(Resource):
+    """Web service for retrieving conversion status"""
+
+    def post(self):
+        json_data = request.get_json(force=True)
+
+        if 'request_id' not in json_data or 'project_id' not in json_data:
+            return 'Required data not present', 400
+
+        return web_service_utils.cancel_conversion_request(json_data, request_queue, request_status_dict), 200
+
+
 class RequestConversionStatus(Resource):
     """Web service for retrieving conversion status"""
 
@@ -78,6 +90,7 @@ class RequestBlibConversion(Resource):
 
 api.add_resource(RequestBlibConversion, '/requestNewBlibConversion')
 api.add_resource(RequestConversionStatus, '/requestConversionStatus')
+api.add_resource(CancelConversionRequest, '/cancelConversionRequest')
 
 if __name__ == '__main__':
 
