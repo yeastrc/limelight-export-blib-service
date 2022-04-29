@@ -59,9 +59,6 @@ def get_json_for_status_request(status_request_data, request_status_dict):
         string: A string containing the generated JSON
     """
 
-    print(status_request_data)
-    print(request_status_dict)
-
     request_id = status_request_data['request_id']
     project_id = status_request_data['project_id']
 
