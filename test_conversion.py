@@ -31,19 +31,18 @@ test_json_parsed = json.loads(test_json_str)
 
 test_project_id = int(os.getenv('TEST_PROJECT_ID'))
 
-
 # create request
 url = 'http://' + service_host + ':' + service_port + '/requestNewBlibConversion'
-print('Sending request to:', url)
+print('Sending request to:', url, flush=True)
 response = requests.post(url, json=test_json_parsed)
 request_id = json.loads(response.text)
-print('Got request_id:', request_id, flush = True)
+print('Got request_id:', request_id, flush=True)
 
 url = 'http://' + service_host + ':' + service_port + '/requestConversionStatus'
 request_dict = {'project_id': test_project_id, 'request_id': request_id}
 
 while True:
     response = requests.post(url, json=request_dict)
-    print('Got status:', str(json.loads(response.text)), flush = True)
+    print('Got status:', str(json.loads(response.text)), flush=True)
 
     time.sleep(10)
