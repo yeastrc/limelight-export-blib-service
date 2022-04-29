@@ -14,8 +14,6 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-import json
-
 
 def _generate_json_for_status_request(request_id, status_text, message_text=None):
     """Generate the JSON to return for request status of blib conversion
@@ -45,7 +43,7 @@ def _generate_json_for_status_request(request_id, status_text, message_text=None
     elif status_text == 'success' and message_text is not None:
         response_json['blib_file_name'] = message_text
 
-    return json.dumps(response_json)
+    return response_json
 
 
 def get_json_for_status_request(status_request_data, request_status_dict):
