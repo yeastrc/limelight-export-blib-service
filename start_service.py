@@ -73,7 +73,7 @@ class RequestBlibConversion(Resource):
             )
             thread.start()
 
-        return request_id, 200
+        return {'request_id': request_id}, 200
 
 
 api.add_resource(RequestBlibConversion, '/requestNewBlibConversion')
