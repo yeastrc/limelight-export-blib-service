@@ -17,6 +17,7 @@
 import os
 from flask import Flask, request
 from flask_restful import Resource, Api
+from datetime import datetime
 from app import general_utils, web_service_utils, request_handler, request_status_dict, request_queue, \
     request_queue_status, __webapp_port_env_key__
 
@@ -49,7 +50,10 @@ class RequestBlibConversion(Resource):
         project_id = json_data['project_id']
         spectral_data = json_data['spectral_data']
 
-        print('Conversion request for project', project_id)
+        print('Conversion request:')
+        print('\tDate:', datetime.today().strftime('%Y-%m-%d'))
+        print('\tproject_id:', project_id)
+        print('\trequest_id:', request_id)
 
         request_queue.append({'id': request_id, 'data': spectral_data})
         request_status_dict[request_id] = {
