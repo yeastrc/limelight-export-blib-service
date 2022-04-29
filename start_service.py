@@ -84,4 +84,4 @@ if __name__ == '__main__':
     port = os.getenv(__webapp_port_env_key__)
     if port is None:
         raise ValueError('No port is defined by env. var.: ' + __webapp_port_env_key__)
-    app.run(debug=True, port=int(port))
+    app.run(debug=False, port=int(port))
