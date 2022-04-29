@@ -18,6 +18,7 @@ import os
 from flask import Flask, request
 from flask_restful import Resource, Api
 from datetime import datetime
+import threading
 from app import general_utils, web_service_utils, request_handler, request_status_dict, request_queue, \
     request_queue_status, __webapp_port_env_key__
 
@@ -64,7 +65,13 @@ class RequestBlibConversion(Resource):
 
         if not request_queue_status['started']:
             request_queue_status['started'] = True
-            request_handler.process_request_queue(request_queue, request_status_dict)
+
+            # start request processor in a separate thread
+            thread = threading.Thread(
+                target=request_handler.process_request_queue,
+                args=(request_queue, request_status_dict)
+            )
+            thread.start()
 
         return request_id, 200
 
