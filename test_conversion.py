@@ -35,7 +35,8 @@ test_project_id = int(os.getenv('TEST_PROJECT_ID'))
 url = 'http://' + service_host + ':' + service_port + '/requestNewBlibConversion'
 print('Sending request to:', url, flush=True)
 response = requests.post(url, json=test_json_parsed)
-request_id = json.loads(response.text)
+request_id = json.loads(response.text)['request_id']
+
 print('Got request_id:', request_id, flush=True)
 
 url = 'http://' + service_host + ':' + service_port + '/requestConversionStatus'
