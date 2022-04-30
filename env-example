@@ -1,0 +1,16 @@
+# change these
+HOST_MACHINE_BLIB_DIR=
+HOST_MACHINE_WORKDIR=
+HOST_MACHINE_WEBAPP_PORT=
+
+# URL to getScanDataFromScanNumbers_XML spectr webservice
+SPECTR_GET_SCAN_DATA_URL=http://HOST:PORT/spectral_storage_get_data/query/getScanDataFromScanNumbers_XML
+
+# should not need to change these
+WEBAPP_PORT=3434
+SPECTR_BATCH_SIZE=20
+
+# will not need to change these
+APP_WORKDIR=/data/app/workdir
+BLIB_DIR=/data/app/blibdir
+BLIB_EXEC_PATH=/usr/src/app/bin/BlibBuild

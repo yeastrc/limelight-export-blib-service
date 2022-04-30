@@ -1,0 +1,20 @@
+version: "3.9"
+
+services:
+  web:
+    build: .
+    container_name: limelight-export-blib-service
+    restart: always
+    ports:
+      - "${HOST_MACHINE_WEBAPP_PORT}:${WEBAPP_PORT}"
+    labels:
+      - traefik.enable=false
+    volumes:
+      - type: bind
+        source: ${HOST_MACHINE_BLIB_DIR}
+        target: /data/app/blibdir
+        read_only: false
+      - type: bind
+        source: ${HOST_MACHINE_WORKDIR}
+        target: /data/app/workdir
+        read_only: false
