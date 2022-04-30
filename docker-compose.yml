@@ -1,7 +1,7 @@
 version: "3.9"
 
 services:
-  web:
+  blib-export:
     build: .
     container_name: limelight-export-blib-service
     restart: always
