@@ -9,6 +9,13 @@ services:
       - "${HOST_MACHINE_WEBAPP_PORT}:${WEBAPP_PORT}"
     labels:
       - traefik.enable=false
+    environment:
+      SPECTR_GET_SCAN_DATA_URL: ${SPECTR_GET_SCAN_DATA_URL}
+      WEBAPP_PORT: ${WEBAPP_PORT}
+      SPECTR_BATCH_SIZE: ${SPECTR_BATCH_SIZE}
+      APP_WORKDIR: ${APP_WORKDIR}
+      BLIB_DIR: ${BLIB_DIR}
+      BLIB_EXEC_PATH: ${BLIB_EXEC_PATH}
     volumes:
       - type: bind
         source: ${HOST_MACHINE_BLIB_DIR}
