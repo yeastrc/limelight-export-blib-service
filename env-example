@@ -1,10 +1,16 @@
-# change these
+# must change these
 HOST_MACHINE_BLIB_DIR=
 HOST_MACHINE_WORKDIR=
 HOST_MACHINE_WEBAPP_PORT=
 
 # URL to getScanDataFromScanNumbers_XML spectr webservice
 SPECTR_GET_SCAN_DATA_URL=http://HOST:PORT/spectral_storage_get_data/query/getScanDataFromScanNumbers_XML
+
+# should probably change these, defaults to running as root
+# change the UID and GID to the user id number and group id number
+# this service will run as within the container
+UID=0
+GID=0
 
 # should not need to change these
 WEBAPP_PORT=3434

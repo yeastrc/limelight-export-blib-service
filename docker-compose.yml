@@ -5,6 +5,7 @@ services:
     build: .
     container_name: limelight-export-blib-service
     restart: always
+    user: "${UID}:${GID}"
     ports:
       - "${HOST_MACHINE_WEBAPP_PORT}:${WEBAPP_PORT}"
     labels:
