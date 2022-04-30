@@ -98,7 +98,7 @@ def cancel_conversion_request(cancel_request_data, request_queue, request_status
     idx = 0
     found = False
     for request in request_queue:
-        if request['request_id'] == request_id:
+        if request['id'] == request_id:
             found = True
             break
 
