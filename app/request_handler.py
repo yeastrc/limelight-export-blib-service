@@ -34,13 +34,13 @@ def process_request_queue(request_queue, request_status_dict):
         None
     """
 
-    while len(request_queue) > 0:
-        request = request_queue.pop(0)
+    while True:
+        while len(request_queue) > 0:
+            request = request_queue.pop(0)
 
-        process_request(request, request_status_dict)
+            process_request(request, request_status_dict)
 
-    time.sleep(__request_check_delay__)
-    process_request_queue(request_queue, request_status_dict)
+        time.sleep(__request_check_delay__)
 
 
 def process_request(request, request_status_dict):
