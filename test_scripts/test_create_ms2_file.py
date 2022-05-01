@@ -35,7 +35,7 @@ def main():
     # do the work
     results = spectr_utils.get_scan_data_for_scan_numbers(spectr_file_id, scan_number_list)
 
-    ms2_file = ms2_lib.initialize_ms2_file('.', ms2_file_name)
+    ms2_file = ms2_lib.initialize_ms2_file('..', ms2_file_name)
 
     for ms2_scan in results:
         ms2_lib.write_scan_to_ms2_file(ms2_file, ms2_scan.scan_number, ms2_scan.precursor_mz,

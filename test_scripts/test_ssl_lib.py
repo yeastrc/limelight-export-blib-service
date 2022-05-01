@@ -22,7 +22,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 ssl_file_name = os.getenv('TEST_SSL_FILE_NAME')
-ssl_file_directory = '.'
+ssl_file_directory = '..'
 
 test_psm_peptides = ['VGAGAPVYLAAVLEYLAAEVLELAGNAAR', 'LAESITIEQGK', 'ELAEDGC[+57.0]SGVEVR']
 test_psm_charges = [3, 3, 2]
