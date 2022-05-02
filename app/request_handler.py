@@ -214,6 +214,7 @@ def create_ms2_file(spectr_file_id, ms2_file_name, workdir, scans_to_add):
 
     scan_count_per_call = int(scan_count_per_call)
 
+    scans_to_add = list(set(scans_to_add))  # de-dup the scan numbers
     scans_to_add.sort()  # maybe not necessary, but put lower scan numbers first
 
     scan_sets = [scans_to_add[i:i + scan_count_per_call] for i in range(0, len(scans_to_add), scan_count_per_call)]
