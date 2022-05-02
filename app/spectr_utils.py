@@ -68,7 +68,6 @@ def get_scan_data_for_scan_numbers(scan_file_hash_key, scan_numbers):
 
     # the xml we're sending in the post request
     xml_for_post = generate_xml_for_post_request(scan_file_hash_key, scan_numbers)
-    print('xml sent to spectr', xml_for_post)
 
     # send the post request
     headers = {'Content-Type': 'application/xml'}
