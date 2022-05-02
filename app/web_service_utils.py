@@ -46,6 +46,9 @@ def _generate_json_for_status_request(request_id, status_text, message_text=None
     elif status_text == 'queued' and message_text is not None:
         response_json['queue_position'] = message_text
 
+    elif status_text == 'processing' and message_text is not None:
+        response_json['end_user_message'] = message_text
+
     return response_json
 
 
@@ -73,6 +76,12 @@ def get_json_for_status_request(status_request_data, request_queue, request_stat
     if request_status_dict[request_id]['status'] == 'queued':
         queue_position = get_queue_position(request_id, request_queue)
         request_status_dict[request_id]['message'] = str(queue_position)
+
+    if request_status_dict[request_id]['status'] == 'processing':
+        if 'end_user_message' in request_status_dict[request_id]:
+            request_status_dict[request_id]['message'] = request_status_dict[request_id]['end_user_message']
+        else:
+            request_status_dict[request_id]['message'] = 'Processing request'
 
     return _generate_json_for_status_request(
         request_id,
