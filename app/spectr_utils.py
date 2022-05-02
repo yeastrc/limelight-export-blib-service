@@ -129,7 +129,7 @@ def handle_spectr_success(response, scan_file_hash_key):
     scan_elements = dom.getElementsByTagName('scan')
 
     if scan_elements is None or len(scan_elements) < 1:
-        raise ValueError('Got spectr success, but found no scan elements in response')
+        raise ValueError('Got spectr success, but found no scan elements in response', response.content)
 
     # parse each scan element, add it to the list of MS2ScanData objects we're returning
     for scan_element in scan_elements:
