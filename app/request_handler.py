@@ -78,8 +78,8 @@ def process_request(request, request_status_dict):
             spectr_file_id = spectr_dict['spectr_file_id']
 
             request_status_dict[request['id']]['end_user_message'] = 'Processing scan file ' + \
-                                                                     spectr_file_count + \
-                                                                     ' of ' + len(request_data)
+                                                                     str(spectr_file_count) + \
+                                                                     ' of ' + str(len(request_data))
 
             scans_to_add = []
 
@@ -105,7 +105,7 @@ def process_request(request, request_status_dict):
         # done iterating over scan files
         ssl_lib.close_ssl_file(ssl_file)
 
-        request_status_dict[request['id']]['end_user_message'] = 'Final step: generating blib file'
+        request_status_dict[request['id']]['end_user_message'] = 'Generating blib file'
 
         # execute proteowizard blib converter using ssl file and ms2 files
         blib_destination_path = os.getenv(__blib_dir_env_key__)
