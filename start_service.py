@@ -47,7 +47,7 @@ class RequestConversionStatus(Resource):
         if 'request_id' not in json_data or 'project_id' not in json_data:
             return 'Required data not present', 400
 
-        return web_service_utils.get_json_for_status_request(json_data, request_status_dict), 200
+        return web_service_utils.get_json_for_status_request(json_data, request_queue, request_status_dict), 200
 
 
 class RequestBlibConversion(Resource):

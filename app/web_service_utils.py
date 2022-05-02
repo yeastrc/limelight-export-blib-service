@@ -43,14 +43,18 @@ def _generate_json_for_status_request(request_id, status_text, message_text=None
     elif status_text == 'success' and message_text is not None:
         response_json['blib_file_name'] = message_text
 
+    elif status_text == 'queued' and message_text is not None:
+        response_json['queue_position'] = message_text
+
     return response_json
 
 
-def get_json_for_status_request(status_request_data, request_status_dict):
+def get_json_for_status_request(status_request_data, request_queue, request_status_dict):
     """Return the JSON to respond to a status request
 
     Parameters:
         status_request_data (dict): A string containing the request as json
+        request_queue (Array): The request queue, an array of dicts: {'id': request_id, 'data': xml_request}
         request_status_dict (dict): A dict containing status information
 
     Returns:
@@ -66,11 +70,32 @@ def get_json_for_status_request(status_request_data, request_status_dict):
     if project_id != request_status_dict[request_id]['project_id']:
         return _generate_json_for_status_request(request_id, 'error', 'Project id does not match.')
 
+    if request_status_dict[request_id]['status'] == 'queued':
+        queue_position = get_queue_position(request_id, request_queue)
+        request_status_dict[request_id]['message'] = str(queue_position)
+
     return _generate_json_for_status_request(
         request_id,
         request_status_dict[request_id]['status'],
         request_status_dict[request_id]['message']
     )
+
+
+def get_queue_position(request_id, request_queue):
+    """Return the position of the request_id in the request queue, starting at 1
+
+    Parameters:
+        request_id (string): The request id
+        request_queue (Array): The request queue, an array of dicts: {'id': request_id, 'data': xml_request}
+
+    Returns:
+        int: The 1-based position of the request_id in the request queue
+    """
+    for idx, request_ob in enumerate(request_queue):
+        if request_ob['id'] == request_id:
+            return idx + 1
+
+    raise ValueError('Did not find request in request queue')
 
 
 def cancel_conversion_request(cancel_request_data, request_queue, request_status_dict):
