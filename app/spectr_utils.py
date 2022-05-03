@@ -16,38 +16,24 @@
 
 import os
 import requests
-from xml.dom import minidom
+import json
 from . import __spectr_get_scan_data_env_key__
 
 
-def generate_xml_for_post_request(scan_file_hash_key, scan_numbers):
-    """Generate the XML to send to spectr to get the scan data for the scan numbers
+def generate_ob_for_post_request(scan_file_hash_key, scan_numbers):
+    """Generate the JSON to send to spectr to get the scan data for the scan numbers
 
     Parameters:
         scan_file_hash_key (string): The spectral file hash key for the spectral file
         scan_numbers (Array): The scan numbers in the file we want to get
 
     Returns:
-        A string containing the generated XML
+        dict: A dict to send to spectr as JSON
     """
-    root = minidom.Document()
 
-    root_elem = root.createElement('get_ScanDataFromScanNumbers_Request')
-    root_elem.setAttribute('scanFileAPIKey', scan_file_hash_key)
-    root_elem.setAttribute('includeParentScans', 'no')
-    root.appendChild(root_elem)
+    ob = {'scanFileAPIKey': scan_file_hash_key, 'includeParentScans': 'NO', 'scanNumbers': scan_numbers}
 
-    scan_numbers_elem = root.createElement('scanNumbers')
-    root_elem.appendChild(scan_numbers_elem)
-
-    for scan_number in scan_numbers:
-        scan_number_elem = root.createElement('scanNumber')
-        scan_numbers_elem.appendChild(scan_number_elem)
-
-        scan_number_text = root.createTextNode(str(scan_number))
-        scan_number_elem.appendChild(scan_number_text)
-
-    return root.toxml()
+    return ob
 
 
 def get_scan_data_for_scan_numbers(scan_file_hash_key, scan_numbers):
@@ -67,11 +53,11 @@ def get_scan_data_for_scan_numbers(scan_file_hash_key, scan_numbers):
         raise ValueError('No ' + __spectr_get_scan_data_env_key__ + ' env variable is set.')
 
     # the xml we're sending in the post request
-    xml_for_post = generate_xml_for_post_request(scan_file_hash_key, scan_numbers)
+    ob_for_post = generate_ob_for_post_request(scan_file_hash_key, scan_numbers)
 
     # send the post request
-    headers = {'Content-Type': 'application/xml'}
-    response = requests.post(spectr_url, data=xml_for_post, headers=headers)
+    headers = {'Content-Type': 'application/json'}
+    response = requests.post(spectr_url, json=ob_for_post, headers=headers)
 
     return parse_spectr_response(response, scan_file_hash_key)
 
@@ -98,21 +84,28 @@ def handle_spectr_success(response, scan_file_hash_key):
     """Handle a response that is a spectr success
 
     example of successful response:
-        <get_ScanDataFromScanNumbers_Response>
-            <status_scanFileAPIKeyNotFound>NO</status_scanFileAPIKeyNotFound>
-            <scans>
-                <scan level="2" scanNumber="27906" retentionTime="3565.1611" totalIonCurrentForScan="2876559.0"
-                ionInjectionTime="74.98243" isCentroid="1" parentScanNumber="27905" precursorCharge="2"
-                precursorMOverZ="414.74452368808">
-                    <peaks>
-                        <peak mz="899.999484" intensity="19999338.33" />
-                        <peak mz="903.399883" intensity="88373.31" />
-                        <peak mz="1003.87368" intensity="7733.84" />
-                    </peaks>
-                </scan>
-                ... repeat for more <scan/> elements
-            </scans>
-        </uploadScanFile_Submit_Response>
+        {
+            "status_scanFileAPIKeyNotFound":null,
+            "scans":[
+                {
+                    "level":1,
+                    "scanNumber":2,
+                    "retentionTime":0.4104105,
+                    "totalIonCurrent_ForScan":1.6223904E7,
+                    "ionInjectionTime":50.0,
+                    "isCentroid":1,
+                    "parentScanNumber":null,
+                    "precursorCharge":null,
+                    "precursor_M_Over_Z":null,
+                    "peaks":[
+                        {
+                            "mz":400.2538146972656,
+                            "intensity":5292.239
+                        },
+                    ]
+                },
+            ]
+        }
 
     Parameters:
         response (requests.Response): The requests.Response from the spectr get data query
@@ -124,31 +117,34 @@ def handle_spectr_success(response, scan_file_hash_key):
 
     ms2_scan_data_objects = []
 
-    dom = minidom.parseString(response.content)
+    response_ob = json.loads(response.text)
 
-    scan_elements = dom.getElementsByTagName('scan')
+    if 'scans' not in response_ob:
+        raise ValueError('Got spectr success, but found no scan elements in response', response.content)
 
-    if scan_elements is None or len(scan_elements) < 1:
+    scans = response_ob['scans']
+
+    if len(scans) < 1:
         raise ValueError('Got spectr success, but found no scan elements in response', response.content)
 
     # parse each scan element, add it to the list of MS2ScanData objects we're returning
-    for scan_element in scan_elements:
-        msn_level = int(scan_element.getAttribute('level'))
-        scan_number = int(scan_element.getAttribute('scanNumber'))
-        retention_time_seconds = float(scan_element.getAttribute('retentionTime'))
-        precursor_charge = int(scan_element.getAttribute('precursorCharge'))
-        precursor_mz = float(scan_element.getAttribute('precursorMOverZ'))
+    for scan_ob in scans:
+        msn_level = scan_ob['level']
+        scan_number = scan_ob['scanNumber']
+        retention_time_seconds = scan_ob['retentionTime']
+        precursor_charge = scan_ob['precursorCharge']
+        precursor_mz = scan_ob['precursor_M_Over_Z']
         peak_list_intensity = []
         peak_list_mz = []
 
-        peak_elements = scan_element.getElementsByTagName('peak')
+        peaks = scan_ob['peaks']
 
-        if peak_elements is None or len(peak_elements) < 1:
+        if peaks is None or len(peaks) < 1:
             raise ValueError('Found no peaks in scan ' + str(scan_number) + ' for spectr file ' + scan_file_hash_key)
 
-        for peak_element in peak_elements:
-            peak_list_intensity.append(float(peak_element.getAttribute('intensity')))
-            peak_list_mz.append(float(peak_element.getAttribute('mz')))
+        for peak_ob in peaks:
+            peak_list_intensity.append(peak_ob['intensity'])
+            peak_list_mz.append(peak_ob['mz'])
 
         ms2_scan_data = MS2ScanData(
             scan_file_hash_key=scan_file_hash_key,
