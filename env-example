@@ -4,7 +4,7 @@ HOST_MACHINE_WORKDIR=
 HOST_MACHINE_WEBAPP_PORT=
 
 # URL to getScanDataFromScanNumbers_XML spectr webservice
-SPECTR_GET_SCAN_DATA_URL=http://HOST:PORT/spectral_storage_get_data/query/getScanDataFromScanNumbers_XML
+SPECTR_GET_SCAN_DATA_URL=http://HOST:PORT/spectral_storage_get_data/query/getScanDataFromScanNumbers_JSON
 
 # should probably change these, defaults to running as root
 # change the UID and GID to the user id number and group id number
