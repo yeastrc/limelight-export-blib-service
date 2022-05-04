@@ -81,12 +81,14 @@ def process_request(request, request_status_dict):
                                                                      str(spectr_file_count) + \
                                                                      ' of ' + str(len(request_data))
 
-            scans_to_add = []
+            scans_to_add = get_distinct_scans_from_request_data(spectr_dict)
+            retention_time_dict = create_ms2_file(spectr_file_id, ms2_file_name, workdir, scans_to_add)
 
             # write out lines to ssl file, capture scan numbers to include in .ms2
             for psm in spectr_dict['psms']:
                 scan_number = psm['scan_number']
                 charge = psm['charge']
+                retention_time_minutes = retention_time_dict[scan_number] / 60
 
                 if 'modifications' not in psm:
                     psm['modifications'] = {}
@@ -96,11 +98,16 @@ def process_request(request, request_status_dict):
                     psm['modifications']
                 )
 
-                scans_to_add.append(scan_number)
-                ssl_lib.write_psm_to_ssl_file(ssl_file, ms2_file_name, scan_number, charge, peptide_sequence)
+                ssl_lib.write_psm_to_ssl_file(
+                    ssl_file,
+                    ms2_file_name,
+                    scan_number,
+                    charge,
+                    peptide_sequence,
+                    retention_time_minutes
+                )
 
             # done iterating over PSMs in this scan file
-            create_ms2_file(spectr_file_id, ms2_file_name, workdir, scans_to_add)
 
         # done iterating over scan files
         ssl_lib.close_ssl_file(ssl_file)
@@ -129,6 +136,30 @@ def process_request(request, request_status_dict):
 
     # finally:
         # clean_workdir(workdir)
+
+
+def get_distinct_scans_from_request_data(request_data_spectr_chunk):
+    """Get sorted list of all distinct scan numbers in the given spectr chunk of the request data
+
+    Parameters:
+        request_data_spectr_chunk (Array): An array of PSM data passed in the request for a given spectr file
+
+    Returns:
+        Array: The distinct scan numbers, no order is implied
+    """
+
+    distinct_scans = set()
+
+    # write out lines to ssl file, capture scan numbers to include in .ms2
+    for psm in request_data_spectr_chunk['psms']:
+        scan_number = psm['scan_number']
+
+        distinct_scans.add(scan_number)
+
+    ret_list = list(distinct_scans)
+    ret_list.sort()
+
+    return ret_list
 
 
 def execute_bibliospec_conversion(project_id, library_name, ssl_file_name, workdir):
@@ -206,16 +237,14 @@ def create_ms2_file(spectr_file_id, ms2_file_name, workdir, scans_to_add):
         scans_to_add (Array): An array of scan numbers (ints) to pull from spectr for this file
 
     Returns:
-        None
+        dict: The retention times found for each scan in the form of: { <scan number>: <retention time in s>, }
     """
     scan_count_per_call = os.getenv(__spectr_batch_size_env_key__)
     if scan_count_per_call is None:
         raise ValueError('Missing environmental variable:', __spectr_batch_size_env_key__)
 
+    retention_time_dict = {}
     scan_count_per_call = int(scan_count_per_call)
-
-    scans_to_add = list(set(scans_to_add))  # de-dup the scan numbers
-    scans_to_add.sort()  # maybe not necessary, but put lower scan numbers first
 
     scan_sets = [scans_to_add[i:i + scan_count_per_call] for i in range(0, len(scans_to_add), scan_count_per_call)]
 
@@ -234,9 +263,12 @@ def create_ms2_file(spectr_file_id, ms2_file_name, workdir, scans_to_add):
                     ms2_scan.peak_list_mz,
                     ms2_scan.peak_list_intensity
                 )
+                retention_time_dict[ms2_scan.scan_number] = ms2_scan.retention_time_seconds
 
     finally:
         ms2_lib.close_ms2_file(ms2_file)
+
+    return retention_time_dict
 
 
 def clean_workdir(workdir):
