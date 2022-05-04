@@ -84,7 +84,7 @@ def process_request(request, request_status_dict):
             scans_to_add = get_distinct_scans_from_request_data(spectr_dict)
             retention_time_dict = create_ms2_file(spectr_file_id, ms2_file_name, workdir, scans_to_add)
 
-            # write out lines to ssl file, capture scan numbers to include in .ms2
+            # write out lines to ssl file
             for psm in spectr_dict['psms']:
                 scan_number = psm['scan_number']
                 charge = psm['charge']
