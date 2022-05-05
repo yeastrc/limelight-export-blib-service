@@ -33,8 +33,9 @@ __workdir_env_key__ = 'APP_WORKDIR'
 # environmental variable name for the full path to the final dir to place the blib file
 __blib_dir_env_key__ = 'BLIB_DIR'
 
-# environmental variable name for full path to BlibBuild executable
-__blib_executable_path_env_key__ = 'BLIB_EXEC_PATH'
+# environmental variable name for full path to BlibBuild and BlibFilter executables
+__blib_build_executable_path_env_key__ = 'BLIB_BUILD_EXEC_PATH'
+__blib_filter_executable_path_env_key__ = 'BLIB_FILTER_EXEC_PATH'
 
 # how long (in seconds) to sleep between checking for new requests to process
 __request_check_delay__ = 10
@@ -59,7 +60,8 @@ env_var_names = [
     __spectr_get_scan_data_env_key__,
     __workdir_env_key__,
     __blib_dir_env_key__,
-    __blib_executable_path_env_key__
+    __blib_build_executable_path_env_key__,
+    __blib_filter_executable_path_env_key__
 ]
 
 for env_var_name in env_var_names:
