@@ -230,9 +230,6 @@ def execute_blib_build_conversion(library_name, ssl_file_name, workdir):
     if not blib_executable.endswith('BlibBuild'):
         raise ValueError('Blib executable must have the name BlibBuild.')
 
-    if os.getenv(__blib_dir_env_key__) is None:
-        raise ValueError('Blib destination dir env var not defined:', __blib_dir_env_key__)
-
     result = subprocess.run(
         [blib_executable, '-H', '-K', ssl_file_name, library_name],
         cwd=workdir,
