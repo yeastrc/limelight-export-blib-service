@@ -224,7 +224,7 @@ def verify_blib_exists(blib_destination_path):
     """
 
     if not os.path.exists(blib_destination_path):
-        raise ValueError('Excepted blib file not found:', blib_destination_path)
+        raise ValueError('Expected blib file not found:', blib_destination_path)
 
 
 def create_ms2_file(spectr_file_id, ms2_file_name, workdir, scans_to_add):
