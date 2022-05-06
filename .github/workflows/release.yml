@@ -23,8 +23,8 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-      - name: Docker meta for webapp
-        id: meta_webapp
+      - name: Docker meta for app
+        id: meta_app
         uses: docker/metadata-action@v3
         with:
           images: |
@@ -32,10 +32,10 @@ jobs:
           tags: |
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}
-      - name: Build and push webapp
-        id: docker_build_webapp
+      - name: Build and push app
+        id: docker_build_app
         uses: docker/build-push-action@v2
         with:
-          context: docker/webapp
+          context: .
           push: true
-          tags: ${{ steps.meta_webapp.outputs.tags }}
+          tags: ${{ steps.meta_app.outputs.tags }}
