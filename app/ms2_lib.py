@@ -56,7 +56,7 @@ def close_ms2_file(ms2_file):
     """Close the filehandle associated with this ms2 file
 
     Returns:
-        null
+        NoneType
     """
     ms2_file.close()
 
@@ -66,7 +66,7 @@ def initialize_ms2_file(path_to_directory, filename):
     to it.
 
     Returns:
-        File handle to the created file for subsequent writes of scan data
+        io.TextIOWrapper: File handle to the created file for subsequent writes of scan data
     """
     ms2_file = open(os.path.join(path_to_directory, filename), 'w')
 
@@ -90,6 +90,6 @@ def write_header_to_ms2_file(ms2_file, header_key, header_value):
         H	ExtractorOptions	MS2/MS1
 
     Returns:
-        null
+        NoneType
     """
     ms2_file.write("H\t" + header_key + "\t" + header_value + "\n")

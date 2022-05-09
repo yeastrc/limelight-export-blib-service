@@ -21,7 +21,7 @@ def write_psm_to_ssl_file(ssl_file, ms2_filename, scan_number, charge, sequence,
     """Create a psm entry to the ssl file.
 
     Returns:
-        None
+        NoneType
     """
 
     ssl_file.write(
@@ -40,7 +40,7 @@ def initialize_ssl_file(path_to_directory, filename):
     """Create a new .ssl file at path_to_directory
 
     Returns:
-        File handle to the created file for subsequent writes of scan data
+        io.TextIOWrapper: File handle to the created file for subsequent writes of scan data
     """
     ssl_file = open(os.path.join(path_to_directory, filename), 'w')
 

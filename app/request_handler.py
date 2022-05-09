@@ -187,7 +187,7 @@ def execute_blib_filter(redundant_blib_filename, final_blib_filename, workdir):
         workdir (string): Full path to where the .redundant.blib and .blib files are located
 
     Returns:
-        None
+        NoneType
     """
 
     blib_filter_executable = os.getenv(__blib_filter_executable_path_env_key__)
@@ -221,7 +221,7 @@ def execute_blib_build_conversion(library_name, ssl_file_name, workdir):
         workdir (string): Full path to where the .ssl and .ms2 files are located
 
     Returns:
-        None
+        NoneType
     """
 
     blib_executable = os.getenv(__blib_build_executable_path_env_key__)
@@ -255,7 +255,7 @@ def move_blib_to_final_destination(workdir, project_id, blib_file_name):
         blib_file_name (string): The filename of the .blib file: 'something.blib'
 
     Returns:
-        None
+        NoneType
     """
     if not os.path.exists(workdir):
         raise ValueError('Working directory does not exist:', workdir)
@@ -291,7 +291,7 @@ def verify_file_exists(file_path):
         file_path (string): Full path to blib file
 
     Returns:
-        None
+        NoneType
     """
 
     if not os.path.exists(file_path):
@@ -351,7 +351,7 @@ def clean_workdir(workdir, success):
         success (bool): Whether the request was completed successfully
 
     Returns:
-        None
+        NoneType
     """
 
     if get_should_clean_workdir(success):
@@ -397,7 +397,7 @@ def verify_blib_destination(blib_filename):
     request id doesn't already exist. Will raise an Exception for any of these circumstances.
 
     Returns:
-        None
+        NoneType
     """
 
     blib_dir = os.getenv(__blib_dir_env_key__)

@@ -32,7 +32,7 @@ def _generate_json_for_status_request(request_id, status_text, message_text=None
         message_text (string): The path to the blib file (if success), error message if error, otherwise None
 
     Returns:
-        A string containing the generated JSON
+        dict: A dict representing the assembled JSON object
     """
 
     response_json = {'request_id': request_id, 'status': status_text}
@@ -61,7 +61,7 @@ def get_json_for_status_request(status_request_data, request_queue, request_stat
         request_status_dict (dict): A dict containing status information
 
     Returns:
-        string: A string containing the generated JSON
+        dict: A dict representing the assembled JSON object
     """
 
     request_id = status_request_data['request_id']

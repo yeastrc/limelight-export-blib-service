@@ -163,14 +163,14 @@ def handle_spectr_success(response, scan_file_hash_key):
 
 
 def handle_spectr_error(response, scan_file_hash_key):
-    """Handle a response that is a spectr error
+    """Handle a response that is a spectr error. Always raises exception
 
     Parameters:
         response (requests.Response): The requests.Response from the spectr get data query
         scan_file_hash_key (string): The spectral file hash key for the spectral file
 
     Returns:
-        None, will always raise an exception
+        NoneType
     """
 
     if str(response.status_code).startswith('5'):

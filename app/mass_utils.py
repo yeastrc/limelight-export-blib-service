@@ -25,7 +25,7 @@ def get_neutral_mass_from_mz_and_charge(mz, charge):
         charge (int): The charge (z)
 
     Returns:
-        The neutral mass
+        float: The neutral mass
     """
     mass = mz * charge
     mass -= charge * proton_mass
