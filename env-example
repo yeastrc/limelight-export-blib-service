@@ -10,7 +10,7 @@ HOST_MACHINE_WORKDIR=
 # The port on the host machine that will listen to requests to this service
 HOST_MACHINE_WEBAPP_PORT=
 
-# URL to getScanDataFromScanNumbers_XML spectr webservice
+# URL to getScanDataFromScanNumbers_JSON spectr webservice
 SPECTR_GET_SCAN_DATA_URL=http://HOST:PORT/spectral_storage_get_data/query/getScanDataFromScanNumbers_JSON
 
 # should probably change these, defaults to running as root
