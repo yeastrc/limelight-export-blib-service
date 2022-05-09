@@ -23,6 +23,8 @@ GID=0
 # ideally this will match spectr's configured maximum batch size
 SPECTR_BATCH_SIZE=20
 
+APP_CLEAN_WORKDIR=
+
 # the port the webapp will use in the docker container
 # likely will not need to change this
 WEBAPP_PORT=3434
