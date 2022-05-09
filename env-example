@@ -1,8 +1,13 @@
 # example .env file to be used with docker-compose
 
-# must change these
+# The full path to a directory on the host machine where the final .blib files will be placed
 HOST_MACHINE_BLIB_DIR=
+
+# The full path to a directory on the host machine that will be used as a working directory
+# to generate the .blib file
 HOST_MACHINE_WORKDIR=
+
+# The port on the host machine that will listen to requests to this service
 HOST_MACHINE_WEBAPP_PORT=
 
 # URL to getScanDataFromScanNumbers_XML spectr webservice
@@ -14,6 +19,10 @@ SPECTR_GET_SCAN_DATA_URL=http://HOST:PORT/spectral_storage_get_data/query/getSca
 UID=0
 GID=0
 
-# should not need to change these
-WEBAPP_PORT=3434
+# the maximum number of scans that will be fetched at a time from spectr
+# ideally this will match spectr's configured maximum batch size
 SPECTR_BATCH_SIZE=20
+
+# the port the webapp will use in the docker container
+# likely will not need to change this
+WEBAPP_PORT=3434
