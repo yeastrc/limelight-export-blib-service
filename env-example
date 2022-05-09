@@ -23,7 +23,9 @@ GID=0
 # ideally this will match spectr's configured maximum batch size
 SPECTR_BATCH_SIZE=20
 
-APP_CLEAN_WORKDIR=
+# data in the working directory will be deleted on successful runs
+# change to "no" to never delete, "yes" to always delete
+APP_CLEAN_WORKDIR="on success"
 
 # the port the webapp will use in the docker container
 # likely will not need to change this
