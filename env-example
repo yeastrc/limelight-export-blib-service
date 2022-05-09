@@ -15,9 +15,3 @@ GID=0
 # should not need to change these
 WEBAPP_PORT=3434
 SPECTR_BATCH_SIZE=20
-
-# will not need to change these
-APP_WORKDIR=/data/app/workdir
-BLIB_DIR=/data/app/blibdir
-BLIB_BUILD_EXEC_PATH=/usr/src/app/bin/BlibBuild
-BLIB_FILTER_EXEC_PATH=/usr/src/app/bin/BlibFilter
