@@ -6,10 +6,11 @@ def generate_request_id():
 
 
 def build_peptide_string_with_mods(peptide_sequence, mods):
-    """Serially process all requests in the request queue
+    """Build a peptide string from a sequence and set of modifications. E.g., "PEPTIDE" and
+    mods of {'3':28.32} becomes "PEP[28.32]TIDE"
 
     Parameters:
-        peptide_sequence (string): The request queue, an array of dicts: {'id': request_id, 'data': xml_request}
+        peptide_sequence (string): The naked peptide sequence (no mods)
         mods (dict): { position_value: x }
 
     Returns:

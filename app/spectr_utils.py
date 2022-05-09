@@ -25,7 +25,7 @@ def generate_ob_for_post_request(scan_file_hash_key, scan_numbers):
 
     Parameters:
         scan_file_hash_key (string): The spectral file hash key for the spectral file
-        scan_numbers (Array): The scan numbers in the file we want to get
+        scan_numbers (list): The scan numbers in the file we want to get
 
     Returns:
         dict: A dict to send to spectr as JSON
@@ -41,10 +41,10 @@ def get_scan_data_for_scan_numbers(scan_file_hash_key, scan_numbers):
 
     Parameters:
         scan_file_hash_key (string): The spectral file hash key for the spectral file
-        scan_numbers (Array): The scan numbers in the file we want to get
+        scan_numbers (list): The scan numbers in the file we want to get
 
     Returns:
-        An array of MS2ScanData objects, one for each scan
+        list: An array of MS2ScanData objects, one for each scan
     """
 
     # request the scan data from spectr
@@ -70,7 +70,7 @@ def parse_spectr_response(response, scan_file_hash_key):
         scan_file_hash_key (string): The spectral file hash key for the spectral file
 
     Returns:
-        An array of MS2ScanData objects, one for each scan
+        list: An array of MS2ScanData objects, one for each scan
     """
 
     # whoopsie, we got an error.
@@ -112,7 +112,7 @@ def handle_spectr_success(response, scan_file_hash_key):
         scan_file_hash_key (string): The spectral file hash key for the spectral file
 
     Returns:
-        An array of MS2ScanData objects, one for each scan
+        list: An array of MS2ScanData objects, one for each scan
     """
 
     ms2_scan_data_objects = []
@@ -205,8 +205,8 @@ class MS2ScanData:
             retention_time_seconds (float): Retention time of this scan in seconds
             precursor_charge (int): Estimated charge of precursor ion
             precursor_mz (float): Measured m/z of precursor ion
-            peak_list_intensity (Array): An array of peak list intensities
-            peak_list_mz (Array): An array of peak list mz values
+            peak_list_intensity (list): An array of peak list intensities
+            peak_list_mz (list): An array of peak list mz values
 
         Returns:
             Populated MS2ScanData object

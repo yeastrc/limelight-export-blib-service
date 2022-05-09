@@ -36,11 +36,11 @@ def write_scan_to_ms2_file(ms2_file, scan_number, precursor_mz, charge, peak_lis
         scan_number (int): Scan number of the scan
         precursor_mz (float): Precursor m/z
         charge (int): Charge for this scan
-        peak_list_mz (Array): array of m/z values from scan
-        peak_list_intensity (Array): array of intensities corresponding to m/z array
+        peak_list_mz (list): array of m/z values from scan
+        peak_list_intensity (list): array of intensities corresponding to m/z array
 
     Returns:
-        null
+        NoneType
     """
 
     neutral_mass = mass_utils.get_neutral_mass_from_mz_and_charge(precursor_mz, charge)

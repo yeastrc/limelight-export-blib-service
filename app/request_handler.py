@@ -28,7 +28,7 @@ def process_request_queue(request_queue, request_status_dict):
     """Serially process all requests in the request queue
 
     Parameters:
-        request_queue (Array): The request queue, an array of dicts: {'id': request_id, 'data': xml_request}
+        request_queue (list): The request queue, a list of dicts: {'id': request_id, 'data': xml_request}
         request_status_dict (dict): The dict that stores the status of requests
 
     Returns:
@@ -158,10 +158,10 @@ def get_distinct_scans_from_request_data(request_data_spectr_chunk):
     """Get sorted list of all distinct scan numbers in the given spectr chunk of the request data
 
     Parameters:
-        request_data_spectr_chunk (Array): An array of PSM data passed in the request for a given spectr file
+        request_data_spectr_chunk (dict): A dict containing the conversion request for one scan file
 
     Returns:
-        Array: The distinct scan numbers, no order is implied
+        list: The distinct scan numbers, no order is implied
     """
 
     distinct_scans = set()
@@ -305,7 +305,7 @@ def create_ms2_file(spectr_file_id, ms2_file_name, workdir, scans_to_add):
         spectr_file_id (string): The spectr file id hash containing the spectra
         ms2_file_name (string): The filename to use for the ms2 file
         workdir (string): Full path to the working directory
-        scans_to_add (Array): An array of scan numbers (ints) to pull from spectr for this file
+        scans_to_add (list): A list of scan numbers (ints) to pull from spectr for this file
 
     Returns:
         dict: The retention times found for each scan in the form of: { <scan number>: <retention time in s>, }
@@ -348,7 +348,7 @@ def clean_workdir(workdir, success):
 
     Parameters:
         workdir (string): Full path to the desired directory
-        success (boolean): Whether the request was completed successfully
+        success (bool): Whether the request was completed successfully
 
     Returns:
         None
@@ -369,10 +369,10 @@ def get_should_clean_workdir(success):
     to 'no' if that variable is not set.
 
     Parameters:
-        success (boolean): Whether the request was completed successfully
+        success (bool): Whether the request was completed successfully
 
     Returns:
-        boolean
+        bool
     """
 
     workdir_deletion_config_string = os.getenv(__clean_working_directory_env_key__)

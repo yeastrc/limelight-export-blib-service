@@ -57,7 +57,7 @@ def get_json_for_status_request(status_request_data, request_queue, request_stat
 
     Parameters:
         status_request_data (dict): A string containing the request as json
-        request_queue (Array): The request queue, an array of dicts: {'id': request_id, 'data': xml_request}
+        request_queue (list): The request queue, an array of dicts: {'id': request_id, 'data': xml_request}
         request_status_dict (dict): A dict containing status information
 
     Returns:
@@ -95,7 +95,7 @@ def get_queue_position(request_id, request_queue):
 
     Parameters:
         request_id (string): The request id
-        request_queue (Array): The request queue, an array of dicts: {'id': request_id, 'data': xml_request}
+        request_queue (list): The request queue, an array of dicts: {'id': request_id, 'data': xml_request}
 
     Returns:
         int: The 1-based position of the request_id in the request queue
@@ -112,7 +112,7 @@ def cancel_conversion_request(cancel_request_data, request_queue, request_status
 
     Parameters:
         cancel_request_data (dict): The cancel request: {'request_id': request_id, 'project_id': project_id}
-        request_queue (Array): The request queue, an array of dicts: {'id': request_id, 'data': xml_request}
+        request_queue (list): The request queue, an array of dicts: {'id': request_id, 'data': xml_request}
         request_status_dict (dict): The dict that stores the status of requests
 
     Returns:
