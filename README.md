@@ -9,8 +9,8 @@ However, if you wish to install it separately (e.g., you are running Limelight n
 follow these directions.
 
 1. Pull this repository to your local system: `git clone https://github.com/yeastrc/limelight-export-blib-service.git`
-2. Copy `env-example` to `.env` (`cp env-example .env`). See below for the list of items to configure.
-3. Edit `.env` and set the requested variables for your local system
+2. Copy `env-example` to `.env` (`cp env-example .env`). 
+3. Edit `.env` and set the requested variables for your local system. See below for the list of items to configure.
 4. Bring up the service with `docker-compose up --detach --build`
 
 ### Items in `.env` to Configure
