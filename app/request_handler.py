@@ -20,8 +20,8 @@ import shutil
 import subprocess
 import traceback
 from . import __request_check_delay__, __workdir_env_key__, __blib_dir_env_key__, __spectr_batch_size_env_key__, \
-    __blib_build_executable_path_env_key__, __blib_filter_executable_path_env_key__, ssl_lib, ms2_lib, general_utils,\
-    spectr_utils
+    __blib_build_executable_path_env_key__, __blib_filter_executable_path_env_key__,\
+    __clean_working_directory_env_key__, ssl_lib, ms2_lib, general_utils, spectr_utils
 
 
 def process_request_queue(request_queue, request_status_dict):
@@ -142,6 +142,8 @@ def process_request(request, request_status_dict):
         request_status_dict[request['id']]['status'] = 'success'
         request_status_dict[request['id']]['message'] = request['id'] + '.blib'
 
+        clean_workdir(workdir, success=True)
+
     except Exception as e:
         request_status_dict[request['id']]['status'] = 'error'
         request_status_dict[request['id']]['message'] = str(e)
@@ -149,8 +151,7 @@ def process_request(request, request_status_dict):
         # print stack trace
         traceback.print_exc()
 
-    # finally:
-        # clean_workdir(workdir)
+        clean_workdir(workdir, success=False)
 
 
 def get_distinct_scans_from_request_data(request_data_spectr_chunk):
@@ -341,21 +342,54 @@ def create_ms2_file(spectr_file_id, ms2_file_name, workdir, scans_to_add):
     return retention_time_dict
 
 
-def clean_workdir(workdir):
+def clean_workdir(workdir, success):
     """Remove the supplied directory and all files within. Swallows all exceptions but prints out
     error message
 
     Parameters:
         workdir (string): Full path to the desired directory
+        success (boolean): Whether the request was completed successfully
 
     Returns:
         None
     """
-    if workdir is not None and os.path.exists(workdir):
-        try:
-            shutil.rmtree(workdir)
-        except OSError as e:
-            print('Error cleaning workdir: ', workdir)
+
+    if get_should_clean_workdir(success):
+        if workdir is not None and os.path.exists(workdir):
+            try:
+                shutil.rmtree(workdir)
+            except OSError as e:
+                print('Error cleaning workdir: ', workdir)
+
+
+def get_should_clean_workdir(success):
+    """Determine whether the working directory should be deleted. Uses the environmental
+    variable to determine behavior. If that variable is set to 'no', never delete. If
+    set to 'yes', always delete. If set to 'on success', only delete on success. Defaults
+    to 'no' if that variable is not set.
+
+    Parameters:
+        success (boolean): Whether the request was completed successfully
+
+    Returns:
+        boolean
+    """
+
+    workdir_deletion_config_string = os.getenv(__clean_working_directory_env_key__)
+
+    if workdir_deletion_config_string is None:
+        workdir_deletion_config_string = 'no'
+
+    if workdir_deletion_config_string == 'no':
+        return False
+
+    if workdir_deletion_config_string == 'yes':
+        return True
+
+    if workdir_deletion_config_string == 'on success':
+        return success
+
+    raise ValueError('Got unknown value for env var:', __clean_working_directory_env_key__)
 
 
 def verify_blib_destination(blib_filename):

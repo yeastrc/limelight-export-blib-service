@@ -37,6 +37,9 @@ __blib_dir_env_key__ = 'BLIB_DIR'
 __blib_build_executable_path_env_key__ = 'BLIB_BUILD_EXEC_PATH'
 __blib_filter_executable_path_env_key__ = 'BLIB_FILTER_EXEC_PATH'
 
+# environmental variable for whether or not to clean the working directory after each request
+__clean_working_directory_env_key__ = 'APP_CLEAN_WORKDIR'
+
 # how long (in seconds) to sleep between checking for new requests to process
 __request_check_delay__ = 10
 
