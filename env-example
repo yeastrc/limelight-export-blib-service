@@ -21,7 +21,7 @@ GID=0
 
 # the maximum number of scans that will be fetched at a time from spectr
 # ideally this will match spectr's configured maximum batch size
-SPECTR_BATCH_SIZE=20
+SPECTR_BATCH_SIZE=200
 
 # data in the working directory will be deleted on successful runs
 # change to "no" to never delete, "yes" to always delete
