@@ -366,7 +366,7 @@ def get_should_clean_workdir(success):
     """Determine whether the working directory should be deleted. Uses the environmental
     variable to determine behavior. If that variable is set to 'no', never delete. If
     set to 'yes', always delete. If set to 'on success', only delete on success. Defaults
-    to 'no' if that variable is not set.
+    to 'yes' if that variable is not set.
 
     Parameters:
         success (bool): Whether the request was completed successfully
@@ -378,7 +378,7 @@ def get_should_clean_workdir(success):
     workdir_deletion_config_string = os.getenv(__clean_working_directory_env_key__)
 
     if workdir_deletion_config_string is None:
-        workdir_deletion_config_string = 'no'
+        workdir_deletion_config_string = 'yes'
 
     if workdir_deletion_config_string == 'no':
         return False
