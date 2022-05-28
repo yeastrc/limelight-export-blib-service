@@ -19,9 +19,10 @@ import time
 import shutil
 import subprocess
 import traceback
+from mpire import WorkerPool
 from . import __request_check_delay__, __workdir_env_key__, __blib_dir_env_key__, __spectr_batch_size_env_key__, \
     __blib_build_executable_path_env_key__, __blib_filter_executable_path_env_key__,\
-    __clean_working_directory_env_key__, ssl_lib, ms2_lib, general_utils, spectr_utils
+    __clean_working_directory_env_key__, __ms2_max_threads_env_key__, ssl_lib, ms2_lib, general_utils, spectr_utils
 
 
 def process_request_queue(request_queue, request_status_dict):
@@ -72,18 +73,41 @@ def process_request(request, request_status_dict):
 
         request_data = request['data']
 
-        spectr_file_count = 0
+        percent_per_file = 100 / len(request_data)
+        percent_done = 0
+        request_status_dict[request['id']]['end_user_message'] = 'Exporting scan files: 0% complete...'
+
+        # hold the data returned from processing each ms2
+        result_dicts = {}
+
+        max_threads = get_ms2_max_threads()
+
+        # create each ms2 file using a multiprocessing workerpool
+        if max_threads > 1:
+            with WorkerPool(n_jobs=max_threads, pass_worker_id=False) as pool:
+                for result_dict in pool.imap_unordered(create_ms2_file, zip(request_data, range(1, len(request_data) + 1), [workdir] * len(request_data)), iterable_len=len(request_data), progress_bar=False):
+                    percent_done += percent_per_file
+                    request_status_dict[request['id']]['end_user_message'] = 'Exporting scan files: ' +\
+                                                                             str(round(percent_done, 1)) +\
+                                                                             '% complete...'
+
+                    result_dicts[result_dict['spectr_file_id']] = result_dict
+        else:
+            counter = 1
+            for spectr_dict in request_data:
+                request_status_dict[request['id']]['end_user_message'] = 'Exporting scan files: ' + \
+                                                                         str(round(percent_done, 1)) + \
+                                                                         '% complete...'
+                result_dict = create_ms2_file(spectr_dict, counter, workdir)
+                result_dicts[result_dict['spectr_file_id']] = result_dict
+
+                percent_done += percent_per_file
+                counter += 1
+
         for spectr_dict in request_data:
-            spectr_file_count = spectr_file_count + 1
-            ms2_file_name = str(spectr_file_count) + '.ms2'
             spectr_file_id = spectr_dict['spectr_file_id']
-
-            request_status_dict[request['id']]['end_user_message'] = 'Processing scan file ' + \
-                                                                     str(spectr_file_count) + \
-                                                                     ' of ' + str(len(request_data))
-
-            scans_to_add = get_distinct_scans_from_request_data(spectr_dict)
-            retention_time_dict = create_ms2_file(spectr_file_id, ms2_file_name, workdir, scans_to_add)
+            ms2_file_name = result_dicts[spectr_file_id]['ms2_file_name']
+            retention_time_dict = result_dicts[spectr_file_id]['retention_times']
 
             # write out lines to ssl file
             for psm in spectr_dict['psms']:
@@ -152,6 +176,23 @@ def process_request(request, request_status_dict):
         traceback.print_exc()
 
         clean_workdir(workdir, success=False)
+
+
+def get_ms2_max_threads():
+    """Get the number of threads to use to build ms2 files. Defaults to 1 if no env var is set
+
+    Returns:
+        int: the number of threads to use
+    """
+
+    max_threads = os.getenv(__ms2_max_threads_env_key__)
+
+    if max_threads is None:
+        max_threads = 1
+    else:
+        max_threads = int(max_threads)
+
+    return max_threads
 
 
 def get_distinct_scans_from_request_data(request_data_spectr_chunk):
@@ -298,18 +339,29 @@ def verify_file_exists(file_path):
         raise ValueError('Expected file not found:', file_path)
 
 
-def create_ms2_file(spectr_file_id, ms2_file_name, workdir, scans_to_add):
+def create_ms2_file(spectr_dict, ms2_file_id, workdir):
     """Create a MS2 file from a spectr file id for the given scans
 
     Parameters:
-        spectr_file_id (string): The spectr file id hash containing the spectra
-        ms2_file_name (string): The filename to use for the ms2 file
+        spectr_dict (dict): The part of the conversion request for a single spectr file id
+        ms2_file_id (int): The base of the filename to use for the ms2 file (e.g., 1 = '1.ms2'
         workdir (string): Full path to the working directory
-        scans_to_add (list): A list of scan numbers (ints) to pull from spectr for this file
 
     Returns:
-        dict: The retention times found for each scan in the form of: { <scan number>: <retention time in s>, }
+        dict: The retention times found for each scan in the form of:
+            {
+                'spectr_file_id': <spectr file id>,
+                'ms2_file_name': <ms2 file name>,
+                'retention_times': {
+                    <scan number>: <retention time in s>,
+                }
+            },
     """
+
+    spectr_file_id = spectr_dict['spectr_file_id']
+    ms2_file_name = str(ms2_file_id) + '.ms2'
+    scans_to_add = get_distinct_scans_from_request_data(spectr_dict)
+
     scan_count_per_call = os.getenv(__spectr_batch_size_env_key__)
     if scan_count_per_call is None:
         raise ValueError('Missing environmental variable:', __spectr_batch_size_env_key__)
@@ -339,7 +391,11 @@ def create_ms2_file(spectr_file_id, ms2_file_name, workdir, scans_to_add):
     finally:
         ms2_lib.close_ms2_file(ms2_file)
 
-    return retention_time_dict
+    return {
+        'spectr_file_id': spectr_file_id,
+        'ms2_file_name': ms2_file_name,
+        'retention_times': retention_time_dict
+    }
 
 
 def clean_workdir(workdir, success):

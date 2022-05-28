@@ -40,6 +40,9 @@ __blib_filter_executable_path_env_key__ = 'BLIB_FILTER_EXEC_PATH'
 # environmental variable for whether or not to clean the working directory after each request
 __clean_working_directory_env_key__ = 'APP_CLEAN_WORKDIR'
 
+# environmental variable for the number of threads to use to build ms2 files
+__ms2_max_threads_env_key__ = 'MS2_MAX_THREADS'
+
 # how long (in seconds) to sleep between checking for new requests to process
 __request_check_delay__ = 10
 
